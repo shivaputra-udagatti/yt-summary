@@ -8,22 +8,18 @@ import openai
 import pinecone
 from flask import request
 import textwrap
-
+from os import environ
 
 app = Flask(__name__)
 
 
-pinecone.init(
-    api_key="28b3f6a0-56e2-4708-bb84-9f6ca101fcc3",
-    environment="asia-southeast1-gcp"
-)
 
-retriever = SentenceTransformer('flax-sentence-embeddings/all_datasets_v3_mpnet-base')
-embed_dim = retriever.get_sentence_embedding_dimension()
+# retriever = SentenceTransformer('flax-sentence-embeddings/all_datasets_v3_mpnet-base')
+# embed_dim = retriever.get_sentence_embedding_dimension()
 
 
 # connect to new index
-index = pinecone.Index("youtube-search")
+# index = pinecone.Index("youtube-search")
 
 @app.route('/')
 def home():
@@ -68,7 +64,7 @@ def get_video_transcript(video_id):
     return text
 
 def generate_summary_(text):
-    openai.api_key = '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'
+    openai.api_key = environ.get('API_KEY')
     instructions = "Please summarize the provided text"
     response = openai.ChatCompletion.create(
         model="gpt-3.5-turbo",
@@ -87,7 +83,7 @@ def generate_summary_(text):
 def generate_summary(text):
 	input_chunks = text_wrap(text)
 	output_chunks = []
-	openai.api_key = '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'
+	openai.api_key = environ.get('API_KEY')
 	for chunk in input_chunks:
 		response = openai.Completion.create(
 			engine="davinci",
