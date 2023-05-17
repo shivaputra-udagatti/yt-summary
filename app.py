@@ -13,13 +13,16 @@ from os import environ
 app = Flask(__name__)
 
 
-
-# retriever = SentenceTransformer('flax-sentence-embeddings/all_datasets_v3_mpnet-base')
-# embed_dim = retriever.get_sentence_embedding_dimension()
+pinecone.init(
+    api_key=environ.get('PINECONE_KEY'),
+    environment="asia-southeast1-gcp"
+)
+retriever = SentenceTransformer('flax-sentence-embeddings/all_datasets_v3_mpnet-base')
+embed_dim = retriever.get_sentence_embedding_dimension()
 
 
 # connect to new index
-# index = pinecone.Index("youtube-search")
+index = pinecone.Index("youtube-search")
 
 @app.route('/')
 def home():
@@ -129,6 +132,6 @@ def split_text(text):
 
 # main driver function
 if __name__ == '__main__':
-	app.run(host='0.0.0.0',debug=True,port=8000)
+	app.run(host='0.0.0.0',port=8000)
 
 
